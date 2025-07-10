@@ -1,0 +1,18 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: enable-fips
+  labels:
+    machineconfiguration.openshift.io/role: worker
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+      - path: /etc/default/grub
+        mode: 0644
+        contents:
+          source: data:,GRUB_CMDLINE_LINUX="fips=1"
+  kernelArguments:
+    - fips=1

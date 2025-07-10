@@ -1,0 +1,38 @@
+resource "azurerm_network_security_group" "cluster" {
+  name                = "${var.cluster_id}-nsg"
+  location            = var.region
+  resource_group_name = var.resource_group_name
+  tags = {
+    environment = var.environment
+    project     = var.project
+    purpose     = "cluster nsg"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "master" {
+  count = var.preexisting_network ? 0 : 1
+
+  subnet_id                 = var.master_subnet_id
+  network_security_group_id = azurerm_network_security_group.cluster.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "worker" {
+  count = var.preexisting_network ? 0 : 1
+
+  subnet_id                 = var.worker_subnet_id
+  network_security_group_id = azurerm_network_security_group.cluster.id
+}
+
+resource "azurerm_network_security_rule" "apiserver_in" {
+  name                        = "apiserver_in"
+  priority                    = 101
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "6443"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.cluster.name
+}

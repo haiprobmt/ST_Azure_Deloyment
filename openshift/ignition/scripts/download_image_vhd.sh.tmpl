@@ -1,0 +1,3 @@
+#!/bin/bash
+wget -r -l1 -np -nd -q ${installer_url} -P $(pwd)/image-files
+gunzip -c $(pwd)/image-files/rhcos-4.14.34-x86_64-azure.x86_64.vhd.gz > $(pwd)/image-files/rhcos-4.14.34-x86_64-azure.x86_64.vhd

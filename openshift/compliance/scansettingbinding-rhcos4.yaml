@@ -1,0 +1,13 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: ScanSettingBinding
+metadata:
+  name: test-scan-rhcos
+  namespace: openshift-compliance
+profiles:
+  - name: rhcos4-moderate
+    kind: Profile
+    apiGroup: compliance.openshift.io/v1alpha1
+settingsRef:
+  name: first-scan
+  kind: ScanSetting
+  apiGroup: compliance.openshift.io/v1alpha1

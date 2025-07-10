@@ -1,0 +1,75 @@
+- name: Fix OpenShift Security Compliance Issues
+  hosts: localhost
+  gather_facts: no
+  environment:
+    KUBECONFIG: "{{ lookup('env', 'KUBECONFIG') | default('~/.kube/config', true) }}"
+
+  tasks:
+
+    - name: Set audit profile to WriteRequestBodies
+      command: >
+        oc patch apiserver cluster --type merge -p '{"spec":{"audit":{"profile":"WriteRequestBodies"}}}'
+
+    - name: Enable etcd Encryption
+      command: >
+        oc patch apiserver cluster --type merge -p '{"spec":{"encryption":{"type":"aescbc"}}}'
+
+    - name: Enforce secure TLS ciphers for Ingress Controller
+      command: >
+        oc patch ingresscontroller default -n openshift-ingress-operator --type merge -p '{"spec":{"tlsSecurityProfile":{"type":"Custom","custom":{"ciphers":["TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256", "TLS_AES_128_GCM_SHA256"]}}}}'
+
+    - name: Check if KubeletConfig exists
+      command: oc get kubeletconfig worker
+      register: kubeletconfig_exists
+      ignore_errors: yes
+
+    - name: Create KubeletConfig if missing
+      command: oc apply -f /home/davidnguyen/st_terraform_linux/Infrastructure/compliance/worker-kubelet-config.yaml
+      when: kubeletconfig_exists.rc != 0
+
+    - name: Patch existing KubeletConfig
+      command: >
+        oc patch kubeletconfig -n openshift-config worker --type merge -p '{"spec":{"streamingConnectionIdleTimeout":"5m"}}}'
+      when: kubeletconfig_exists.rc == 0
+
+    - name: Set API Server audit log max size
+      command: >
+        oc patch apiserver cluster --type merge -p '{"spec":{"audit":{"logMaxSize":100}}}'
+
+    - name: Disable AutoTLS for etcd
+      command: >
+        oc patch etcd cluster --type merge -p '{"spec":{"tls":{"autoTLS":false}}}'
+
+    - name: Create MachineConfig to enforce eviction thresholds
+      copy:
+        dest: /home/davidnguyen/st_terraform_linux/Infrastructure/compliance/worker-eviction-thresholds.yaml
+        content: |
+          apiVersion: machineconfiguration.openshift.io/v1
+          kind: KubeletConfig
+          metadata:
+            name: worker-eviction-thresholds
+          spec:
+            machineConfigPoolSelector:
+              matchLabels:
+                pools.operator.machineconfiguration.openshift.io/worker: ""
+            kubeletConfig:
+              evictionHard:
+                memory.available: "500Mi"
+                nodefs.available: "10%"
+                nodefs.inodesFree: "5%"
+                imagefs.available: "15%"
+
+    - name: Apply MachineConfig for eviction thresholds
+      command: oc apply -f /home/davidnguyen/st_terraform_linux/Infrastructure/compliance/worker-eviction-thresholds.yaml
+
+    - name: Restart API server
+      command: oc delete pod -n openshift-kube-apiserver --all
+      ignore_errors: yes
+
+    - name: Restart Ingress Controller
+      command: oc rollout restart daemonset.apps/router -n openshift-ingress
+      ignore_errors: yes
+
+    - name: Restart etcd
+      command: oc delete pod -n openshift-etcd --all
+      ignore_errors: yes

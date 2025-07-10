@@ -1,0 +1,342 @@
+data "template_file" "install_operators" {
+  template = <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cs-control
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: db2u
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana5
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ibm-cpd-operators
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ibm-sls
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mas-prd-core
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mas-prd-manage
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-cluster-csi-drivers
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-operators
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: redhat-marketplace
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager-operator
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-licensing-operator-app
+  namespace: cs-control
+spec:
+  channel: v4.2
+  name: ibm-licensing-operator-app
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: db2u-operator
+  namespace: db2u
+spec:
+  channel: v110509.0
+  name: db2u-operator
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: grafana-operator
+  namespace: grafana5
+spec:
+  channel: v5
+  name: grafana-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cloud-native-postgresql
+  namespace: ibm-cpd-operators
+spec:
+  channel: stable
+  name: cloud-native-postgresql
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cpd-ca-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v25.0
+  name: ibm-ca-operator
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cpd-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v5.0
+  name: cpd-platform-operator
+  source: cpd-platform
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-common-service-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v4.3
+  name: ibm-common-service-operator
+  source: opencloud-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-ccs-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v8.0
+  name: ibm-cpd-ccs
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-ws-runtimes-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v8.0
+  name: ibm-cpd-ws-runtimes
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: aws-efs-csi-driver-operator
+  namespace: openshift-cluster-csi-drivers
+spec:
+  channel: stable
+  name: aws-efs-csi-driver-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-pipelines-operator
+  namespace: openshift-operators
+spec:
+  channel: pipelines-1.15
+  name: openshift-pipelines-operator-rh
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-data-reporter-operator
+  namespace: redhat-marketplace
+spec:
+  channel: stable
+  name: ibm-data-reporter-operator
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-metrics-operator
+  namespace: redhat-marketplace
+spec:
+  channel: stable
+  name: ibm-metrics-operator
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1
+  name: openshift-cert-manager-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-datarefinery-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v8.0
+  name: ibm-cpd-datarefinery
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-elasticsearch-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v1.1
+  name: ibm-elasticsearch-operator
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-namespace-scope-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v4.2
+  name: ibm-namespace-scope-operator
+  source: opencloud-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-platformui-operator
+  namespace: ibm-cpd-operators
+spec:
+  channel: v4.3
+  name: ibm-zen-operator
+  source: opencloud-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: operand-deployment-lifecycle-manager-app
+  namespace: ibm-cpd-operators
+spec:
+  channel: v4.2
+  name: ibm-odlm
+  source: opencloud-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-sls
+  namespace: ibm-sls
+spec:
+  channel: 3.x
+  name: ibm-sls
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-truststore-mgr
+  namespace: ibm-sls
+spec:
+  channel: 1.x
+  name: ibm-truststore-mgr
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-mas-operator
+  namespace: mas-prd-core
+spec:
+  channel: 8.11.x
+  name: ibm-mas
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-truststore-mgr-core
+  namespace: mas-prd-core
+spec:
+  channel: 1.x
+  name: ibm-truststore-mgr
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-mas-manage
+  namespace: mas-prd-manage
+spec:
+  channel: 8.7.x
+  name: ibm-mas-manage
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-truststore-mgr-manage
+  namespace: mas-prd-manage
+spec:
+  channel: 1.x
+  name: ibm-truststore-mgr
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+EOF
+}
+
+resource "local_file" "install-operators" {
+  content  = data.template_file.install_operators.rendered
+  filename = "${local.installer_workspace}/install-operators.yaml"
+  depends_on = [
+    null_resource.download_binaries,
+    null_resource.generate_manifests,
+  ]
+}

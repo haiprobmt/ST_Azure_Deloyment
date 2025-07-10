@@ -1,0 +1,12 @@
+#!/bin/bash
+wget -r -l1 -np -nd -q ${installer_url} -P $(pwd)/installer-files
+tar zxvf $(pwd)/installer-files*/openshift-install-linux.tar.gz -C $(pwd)/installer-files
+wget -r -l1 -np -nd -q ${installer_client_url} -P $(pwd)/installer-files
+tar zxvf $(pwd)/installer-files*/openshift-client-linux.tar.gz -C $(pwd)/installer-files
+wget https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64 -O ${installer_workspace}/jq || { echo "Failed to download jq"; exit 1; }
+chmod u+x ${installer_workspace}/jq
+rm -f ${installer_workspace}/*.tar.gz ${installer_workspace}/robots*.txt* ${installer_workspace}/README.md
+if [[ "${airgapped_enabled}" == "true" ]]; then
+  ${installer_workspace}/oc adm release extract -a ${pull_secret} --command=openshift-install ${airgapped_repository}:${openshift_version}-x86_64 || { echo "Failed to extract openshift-install from airgapped repository"; exit 1; }
+  mv ${path_root}/openshift-install ${installer_workspace}
+fi
